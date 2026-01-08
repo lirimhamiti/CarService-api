@@ -8,7 +8,7 @@ public class ServiceRecord : AuditableEntity
     public Car Car { get; private set; }
 
     public DateTime ServiceDate { get; private set; }
-    public int MileageKM { get; private set; }
+    public int Mileage { get; private set; }
     public string Description { get; private set; }
 
     private ServiceRecord() { } 
@@ -21,7 +21,7 @@ public class ServiceRecord : AuditableEntity
     {
         CarId = carId;
         ServiceDate = serviceDate;
-        MileageKM = mileage;
+        Mileage = mileage;
         Description = description;
     }
 }
