@@ -16,6 +16,7 @@ public sealed class CreateGarageHandler
     public async Task<GarageDto> Handle(CreateGarageCommand cmd, CancellationToken ct = default)
     {
         var garage = new Garage(cmd.Name, cmd.City);
+
         await _garages.AddAsync(garage, ct);
 
         return new GarageDto(garage.Id, garage.Name, garage.City);

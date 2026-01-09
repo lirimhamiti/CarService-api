@@ -1,4 +1,8 @@
-﻿using CarService.Infrastructure.Persistence;
+﻿using CarService.Application.Abstractions;
+using CarService.Application.Cars.Commands;
+using CarService.Application.Garages.Commands;
+using CarService.Infrastructure.Persistence;
+using CarService.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +25,17 @@ public static class DependencyInjection
     {
         services.AddDbContext<CarServiceDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+
+        services.AddScoped<IGarageRepository, GarageRepository>();
+        services.AddScoped<CreateGarageHandler>();
+
+        services.AddScoped<IGarageRepository, GarageRepository>();
+        services.AddScoped<ICarRepository, CarRepository>();
+
+        services.AddScoped<GetGaragesHandler>();
+        services.AddScoped<GetGarageByIdHandler>();
+        services.AddScoped<CreateCarHandler>();
+
 
 
         return services;
