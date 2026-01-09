@@ -1,11 +1,10 @@
 ﻿using CarService.Domain.Common;
 
-namespace CarService.Domain.ValueObjects;
-
 public sealed class PlateNumber : ValueObject
 {
     public string Value { get; }
 
+    private PlateNumber() { }
     private PlateNumber(string value) => Value = value;
 
     public static PlateNumber Create(string value)
