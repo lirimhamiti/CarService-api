@@ -24,4 +24,11 @@ public sealed class GarageRepository : IGarageRepository
     {
         return await _context.Garages.FirstOrDefaultAsync(x => x.Id == id, ct);
     }
+
+    public async Task<IReadOnlyList<Garage>> GetAllAsync(CancellationToken ct = default)
+    {
+        return await _context.Garages
+            .AsNoTracking()
+            .ToListAsync(ct);
+    }
 }
