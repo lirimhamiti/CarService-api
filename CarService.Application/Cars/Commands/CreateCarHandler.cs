@@ -1,7 +1,6 @@
 ﻿using CarService.Application.Abstractions;
 using CarService.Application.Cars.Dtos;
 using CarService.Domain.Entities;
-using CarService.Domain.ValueObjects;
 
 namespace CarService.Application.Cars.Commands;
 
@@ -22,30 +21,26 @@ public sealed class CreateCarHandler
         if (garage is null)
             throw new ArgumentException("Garage not found.");
 
-        if (!string.IsNullOrWhiteSpace(cmd.Vin))
+        var vin = (cmd.Vin ?? string.Empty).Trim();
+        var plate = cmd.PlateNumber; 
+
+        if (!string.IsNullOrWhiteSpace(vin))
         {
-            var vin = cmd.Vin.Trim().ToUpperInvariant();
+            vin = vin.ToUpperInvariant();
             if (await _cars.VinExistsAsync(vin, ct))
                 throw new ArgumentException("A car with this VIN already exists.");
         }
 
-        var car = new Car(
-            PlateNumber.Create(cmd.PlateNumber),
-            cmd.Vin,
-            cmd.Brand,
-            cmd.Model,
-            cmd.Year,
-            cmd.GarageId);
+        var car = new Car(cmd.GarageId, plate, vin);
 
         await _cars.AddAsync(car, ct);
 
         return new CarDto(
             car.Id,
-            car.PlateNumber.Value,
+            car.PlateNumber,
             car.Vin,
-            car.Brand,
-            car.Model,
-            car.Year,
-            car.GarageId);
+            car.GarageId,
+            car.CreatedAt
+        );
     }
 }

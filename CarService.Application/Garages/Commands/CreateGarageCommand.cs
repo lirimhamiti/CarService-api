@@ -1,3 +1,9 @@
 ﻿namespace CarService.Application.Garages.Commands;
 
-public sealed record CreateGarageCommand(string Name, string City);
+public sealed record CreateGarageCommand(
+    string Name,
+    string City,
+    string Email,
+    string Username,
+    string Password
+);

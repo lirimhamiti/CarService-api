@@ -15,6 +15,6 @@ public sealed class GetGaragesHandler
     public async Task<IReadOnlyList<GarageDto>> Handle(CancellationToken ct = default)
     {
         var list = await _garages.GetAllAsync(ct);
-        return list.Select(x => new GarageDto(x.Id, x.Name, x.City)).ToList();
+        return list.Select(x => new GarageDto(x.Id, x.Name, x.City, x.Email, x.Username, x.Status.ToString())).ToList();
     }
 }

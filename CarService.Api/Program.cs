@@ -1,13 +1,30 @@
 using CarService.Application.Cars.Commands;
 using CarService.Application.Garages.Commands;
+using CarService.Domain.Entities;
 using CarService.Infrastructure;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddScoped<IPasswordHasher<Garage>, PasswordHasher<Garage>>();
+
+var corsPolicyName = "Web";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(corsPolicyName, p =>
+        p.WithOrigins("http://localhost:5173")
+         .AllowAnyHeader()
+         .AllowAnyMethod()
+    );
+});
+
 
 var app = builder.Build();
+
+app.UseCors("Web");
 
 if (app.Environment.IsDevelopment())
 {

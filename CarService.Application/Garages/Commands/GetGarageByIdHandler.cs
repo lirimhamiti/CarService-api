@@ -15,6 +15,6 @@ public sealed class GetGarageByIdHandler
     public async Task<GarageDto?> Handle(Guid id, CancellationToken ct = default)
     {
         var garage = await _garages.GetByIdAsync(id, ct);
-        return garage is null ? null : new GarageDto(garage.Id, garage.Name, garage.City);
+        return garage is null ? null : new GarageDto(garage.Id, garage.Name, garage.City, garage.Email, garage.Username, garage.Status.ToString());
     }
 }

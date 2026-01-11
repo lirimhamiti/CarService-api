@@ -1,39 +1,55 @@
 ﻿using CarService.Domain.Common;
+using CarService.Domain.Enums;
 
 namespace CarService.Domain.Entities;
 
-public sealed class Garage : AuditableEntity
+public sealed class Garage : AuditableEntity 
 {
-    public string Name { get; private set; } = null!;
-    public string City { get; private set; } = null!;
+    public string Name { get; private set; } = default!;
+    public string City { get; private set; } = default!;
+
+    public string Email { get; private set; } = default!;
+    public string Username { get; private set; } = default!;
+    public string PasswordHash { get; private set; } = default!;
+    public GarageStatus Status { get; private set; } = GarageStatus.Pending;
+    public DateTime? ApprovedAt { get; private set; }
+
 
     private Garage() { }
 
-    public Garage(string name, string city)
+    public Garage(string name, string city, string email, string username, string passwordHash)
     {
-        SetName(name);
-        SetCity(city);
+        Id = Guid.NewGuid();
+        Name = name;
+        City = city;
+        Email = email;
+        Username = username;
+        PasswordHash = passwordHash;
+        Status = GarageStatus.Pending;
+        ApprovedAt = null;
     }
 
-    public void Update(string name, string city)
+    public void Approve()
     {
-        SetName(name);
-        SetCity(city);
+        Status = GarageStatus.Approved;
+        ApprovedAt = DateTime.UtcNow;
+        MarkUpdated();
     }
 
-    private void SetName(string name)
+    public void Reject()
     {
-        if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("Garage name is required.");
-
-        Name = name.Trim();
+        Status = GarageStatus.Rejected;
+        MarkUpdated();
     }
 
-    private void SetCity(string city)
+    public void SetPasswordHash(string passwordHash)
     {
-        if (string.IsNullOrWhiteSpace(city))
-            throw new ArgumentException("City is required.");
+        if (string.IsNullOrWhiteSpace(passwordHash))
+            throw new ArgumentException("PasswordHash is required.");
 
-        City = city.Trim();
+        PasswordHash = passwordHash;
+        MarkUpdated();
     }
+
+
 }
