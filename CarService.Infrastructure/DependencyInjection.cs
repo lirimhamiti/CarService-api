@@ -1,8 +1,10 @@
 ﻿using CarService.Application.Abstractions;
 using CarService.Application.Cars.Commands;
 using CarService.Application.Garages.Commands;
+using CarService.Application.Owners.Queries;
 using CarService.Infrastructure.Persistence;
 using CarService.Infrastructure.Persistence.Repositories;
+using CarService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +37,12 @@ public static class DependencyInjection
         services.AddScoped<GetGaragesHandler>();
         services.AddScoped<GetGarageByIdHandler>();
         services.AddScoped<CreateCarHandler>();
+        services.AddScoped<ICarOwnerTokenRepository, CarOwnerTokenRepository>();
+        services.AddScoped<GetCarByTokenHandler>();
+        services.AddScoped<GetPendingGaragesHandler>();
+        services.AddScoped<ApproveGarageHandler>();
+        services.AddScoped<RejectGarageHandler>();
+
 
 
 

@@ -1,5 +1,6 @@
 ﻿using CarService.Application.Abstractions;
 using CarService.Domain.Entities;
+using CarService.Domain.Enums;
 using CarService.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,4 +32,20 @@ public sealed class GarageRepository : IGarageRepository
             .AsNoTracking()
             .ToListAsync(ct);
     }
+
+    public async Task<Garage?> GetByUsernameAsync(string username, CancellationToken ct = default)
+    {
+        var u = username.Trim();
+        return await _context.Garages.FirstOrDefaultAsync(x => x.Username == u, ct);
+    }
+
+    public async Task<List<Garage>> GetPendingAsync(CancellationToken ct = default)
+       => await _context.Garages
+           .AsNoTracking()
+           .Where(x => x.Status == GarageStatus.Pending)
+           .OrderBy(x => x.CreatedAt)
+           .ToListAsync(ct);
+
+    public Task SaveChangesAsync(CancellationToken ct = default)
+        => _context.SaveChangesAsync(ct);
 }
