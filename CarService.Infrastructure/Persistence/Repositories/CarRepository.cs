@@ -17,8 +17,13 @@ public sealed class CarRepository : ICarRepository
     public async Task AddAsync(Car car, CancellationToken ct = default)
     {
         await _context.Cars.AddAsync(car, ct);
-        await _context.SaveChangesAsync(ct);
     }
+
+    public Task SaveChangesAsync(CancellationToken ct = default)
+    {
+        return _context.SaveChangesAsync(ct);
+    }
+
 
     public async Task<Car?> GetByIdAsync(Guid id, CancellationToken ct = default)
     {
@@ -29,4 +34,19 @@ public sealed class CarRepository : ICarRepository
     {
         return await _context.Cars.AnyAsync(x => x.Vin == vin, ct);
     }
+
+    public Task<bool> PlateExistsAsync(string plateNumber, CancellationToken ct = default)
+    {
+        return _context.Cars.AnyAsync(x => x.PlateNumber == plateNumber, ct);
+    }
+
+    public async Task<IReadOnlyList<Car>> GetByGarageIdAsync(Guid garageId, CancellationToken ct = default)
+    {
+        return await _context.Cars
+            .Where(x => x.GarageId == garageId)
+            .OrderByDescending(x => x.CreatedAt)
+            .ToListAsync(ct);
+    }
+
+
 }

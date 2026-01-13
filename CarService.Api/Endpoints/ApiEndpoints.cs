@@ -8,6 +8,7 @@ public static class ApiEndpoints
         app.MapCarEndpoints();
         app.MapAdminEndpoints();
         app.MapOwnerEndpoints();
+        app.MapServiceRecordEndpoints();
 
         return app;
     }

@@ -13,6 +13,7 @@ public sealed class CarServiceDbContext : DbContext
     public DbSet<ServiceRecord> ServiceRecords => Set<ServiceRecord>();
     public DbSet<CarOwnerToken> CarOwnerTokens => Set<CarOwnerToken>();
 
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

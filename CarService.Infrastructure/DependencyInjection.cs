@@ -1,5 +1,6 @@
 ﻿using CarService.Application.Abstractions;
 using CarService.Application.Cars.Commands;
+using CarService.Application.Cars.Queries;
 using CarService.Application.Garages.Commands;
 using CarService.Application.Owners.Queries;
 using CarService.Infrastructure.Persistence;
@@ -42,6 +43,7 @@ public static class DependencyInjection
         services.AddScoped<GetPendingGaragesHandler>();
         services.AddScoped<ApproveGarageHandler>();
         services.AddScoped<RejectGarageHandler>();
+        services.AddScoped<GetCarsByGarageHandler>();
 
 
 
