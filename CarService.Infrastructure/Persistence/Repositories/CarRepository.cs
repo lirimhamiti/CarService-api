@@ -48,5 +48,8 @@ public sealed class CarRepository : ICarRepository
             .ToListAsync(ct);
     }
 
+    public Task<Car?> GetByVinAsync(string vin, CancellationToken ct = default)
+        => _context.Cars.AsNoTracking().FirstOrDefaultAsync(x => x.Vin == vin, ct);
+
 
 }

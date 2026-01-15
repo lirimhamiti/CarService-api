@@ -16,5 +16,8 @@ public interface ICarRepository
 
     Task<IReadOnlyList<Car>> GetByGarageIdAsync(Guid garageId, CancellationToken ct = default);
 
+    Task<Car?> GetByVinAsync(string vin, CancellationToken ct = default);
+
+
 
 }

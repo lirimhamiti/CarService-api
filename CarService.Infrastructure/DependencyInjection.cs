@@ -44,8 +44,12 @@ public static class DependencyInjection
         services.AddScoped<ApproveGarageHandler>();
         services.AddScoped<RejectGarageHandler>();
         services.AddScoped<GetCarsByGarageHandler>();
-
-
+        services.AddScoped<ICarRepository, CarRepository>();
+        services.AddScoped<IServiceRecordRepository, ServiceRecordRepository>();
+        services.AddScoped<ICarOwnerTokenRepository, CarOwnerTokenRepository>();
+        services.AddScoped<GetCarByVinHandler>();
+        services.AddScoped<GetCarServicesByVinHandler>();
+        services.AddScoped<GetCarServicesByTokenHandler>();
 
 
         return services;

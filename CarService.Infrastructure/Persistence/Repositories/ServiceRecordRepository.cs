@@ -29,4 +29,13 @@ public sealed class ServiceRecordRepository : IServiceRecordRepository
             .OrderByDescending(x => x.ServiceDate)
             .ToListAsync(ct);
     }
+
+    public async Task<IReadOnlyList<ServiceRecord>> GetByCarIdAsync(Guid carId, CancellationToken ct = default)
+    {
+        return await _db.ServiceRecords
+            .AsNoTracking()
+            .Where(x => x.CarId == carId)
+            .OrderByDescending(x => x.ServiceDate)
+            .ToListAsync(ct);
+    }
 }

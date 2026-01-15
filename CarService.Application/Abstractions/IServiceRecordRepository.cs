@@ -10,4 +10,7 @@ public interface IServiceRecordRepository
         Guid carId,
         CancellationToken ct = default
     );
+
+    Task<IReadOnlyList<ServiceRecord>> GetByCarIdAsync(Guid carId, CancellationToken ct = default);
+
 }
