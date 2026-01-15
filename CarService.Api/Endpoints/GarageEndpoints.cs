@@ -1,4 +1,6 @@
 ﻿using CarService.Application.Garages.Commands;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace CarService.Api.Endpoints;
 
@@ -8,24 +10,35 @@ public static class GarageEndpoints
     {
         var garages = app.MapGroup("/garages");
 
-        garages.MapPost("/register", async (CreateGarageCommand cmd, CreateGarageHandler handler, CancellationToken ct) =>
+        garages.MapPost("/register", async (
+      CreateGarageCommand cmd,
+      CreateGarageHandler handler,
+      CancellationToken ct) =>
         {
-            var dto = await handler.Handle(cmd, ct);
-            return Results.Accepted($"/admin/garages/pending/{dto.Id}", dto);
+            try
+            {
+                var dto = await handler.Handle(cmd, ct);
+                return Results.Accepted($"/admin/garages/pending/{dto.Id}", dto);
+            }
+            catch (InvalidOperationException ex) when (ex.Message == "USERNAME_TAKEN")
+            {
+                return Results.Conflict(new
+                {
+                    code = "USERNAME_TAKEN",
+                    message = "This username is already taken."
+                });
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is PostgresException pg && pg.SqlState == "23505")
+            {
+                return Results.Conflict(new
+                {
+                    code = "USERNAME_TAKEN",
+                    message = "This username is already taken."
+                });
+            }
         });
 
 
-        //garages.MapGet("/", async (GetGaragesHandler handler, CancellationToken ct) =>
-        //{
-        //    var dtos = await handler.Handle(ct);
-        //    return Results.Ok(dtos);
-        //});
-
-        //garages.MapGet("/{id:guid}", async (Guid id, GetGarageByIdHandler handler, CancellationToken ct) =>
-        //{
-        //    var dto = await handler.Handle(id, ct);
-        //    return dto is null ? Results.NotFound() : Results.Ok(dto);
-        //});
 
         garages.MapPost("/login", async (GarageLoginCommand cmd, GarageLoginHandler handler, CancellationToken ct) =>
         {

@@ -18,6 +18,11 @@ public sealed class CreateGarageHandler
 
     public async Task<GarageDto> Handle(CreateGarageCommand cmd, CancellationToken ct = default)
     {
+        var username = cmd.Username.Trim();
+
+            if (await _garages.UsernameExistsAsync(username, ct))
+                throw new InvalidOperationException("USERNAME_TAKEN");
+
         var garage = new Garage(cmd.Name, cmd.City, cmd.Email, cmd.Username, passwordHash: "temp");
         var hash = _hasher.HashPassword(garage, cmd.Password);
         garage.SetPasswordHash(hash);

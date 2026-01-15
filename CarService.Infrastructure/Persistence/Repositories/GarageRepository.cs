@@ -48,4 +48,11 @@ public sealed class GarageRepository : IGarageRepository
 
     public Task SaveChangesAsync(CancellationToken ct = default)
         => _context.SaveChangesAsync(ct);
+
+    public async Task<bool> UsernameExistsAsync(string username, CancellationToken ct = default)
+    {
+        var u = username.Trim().ToLower();
+        return await _context.Garages.AnyAsync(x => x.Username.ToLower() == u, ct);
+    }
+
 }

@@ -11,4 +11,7 @@ public interface IGarageRepository
 
     Task<List<Garage>> GetPendingAsync(CancellationToken ct = default);
     Task SaveChangesAsync(CancellationToken ct = default);
+
+    Task<bool> UsernameExistsAsync(string username, CancellationToken ct = default);
+
 }
