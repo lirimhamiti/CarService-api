@@ -1,12 +1,23 @@
 ﻿using CarService.Application.Garages.Commands;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CarService.Api.Endpoints;
+
 
 public static class AdminEndpoints
 {
     public static WebApplication MapAdminEndpoints(this WebApplication app)
     {
         var admin = app.MapGroup("/admin");
+
+        admin.MapGet("/garages", async (
+         [FromQuery] string? status,
+         GetGaragesHandler handler,
+         CancellationToken ct) =>
+        {
+            var list = await handler.Handle(status, ct);
+            return Results.Ok(list);
+        });
 
         admin.MapGet("/garages/pending", async (GetPendingGaragesHandler handler, CancellationToken ct) =>
         {

@@ -55,4 +55,14 @@ public sealed class GarageRepository : IGarageRepository
         return await _context.Garages.AnyAsync(x => x.Username.ToLower() == u, ct);
     }
 
+    public async Task<IReadOnlyList<Garage>> GetByStatusAsync(GarageStatus status, CancellationToken ct = default)
+    {
+        return await _context.Garages
+            .AsNoTracking()
+            .Where(x => x.Status == status)
+            .OrderByDescending(x => x.CreatedAt)
+            .ToListAsync(ct);
+    }
+
+
 }

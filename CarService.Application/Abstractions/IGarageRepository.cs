@@ -1,4 +1,5 @@
 ﻿using CarService.Domain.Entities;
+using CarService.Domain.Enums;
 
 namespace CarService.Application.Abstractions;
 
@@ -13,5 +14,8 @@ public interface IGarageRepository
     Task SaveChangesAsync(CancellationToken ct = default);
 
     Task<bool> UsernameExistsAsync(string username, CancellationToken ct = default);
+
+    Task<IReadOnlyList<Garage>> GetByStatusAsync(GarageStatus status, CancellationToken ct = default);
+
 
 }

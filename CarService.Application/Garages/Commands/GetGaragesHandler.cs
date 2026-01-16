@@ -1,5 +1,6 @@
 ﻿using CarService.Application.Abstractions;
 using CarService.Application.Garages.Dtos;
+using CarService.Domain.Enums;
 
 namespace CarService.Application.Garages.Commands;
 
@@ -12,9 +13,21 @@ public sealed class GetGaragesHandler
         _garages = garages;
     }
 
-    public async Task<IReadOnlyList<GarageDto>> Handle(CancellationToken ct = default)
+    public async Task<IReadOnlyList<GarageDto>> Handle(string? status, CancellationToken ct = default)
     {
-        var list = await _garages.GetAllAsync(ct);
-        return list.Select(x => new GarageDto(x.Id, x.Name, x.City, x.Email, x.Username, x.Status.ToString())).ToList();
+        var s = (status ?? "all").Trim().ToLowerInvariant();
+
+        var list = s switch
+        {
+            "pending" => await _garages.GetByStatusAsync(GarageStatus.Pending, ct),
+            "approved" => await _garages.GetByStatusAsync(GarageStatus.Approved, ct),
+            "rejected" => await _garages.GetByStatusAsync(GarageStatus.Rejected, ct),
+            "all" => await _garages.GetAllAsync(ct),
+            _ => await _garages.GetAllAsync(ct) 
+        };
+
+        return list
+            .Select(x => new GarageDto(x.Id, x.Name, x.City, x.Email, x.Username, x.Status.ToString()))
+            .ToList();
     }
 }
