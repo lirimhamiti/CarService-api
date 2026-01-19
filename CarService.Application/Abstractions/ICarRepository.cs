@@ -18,6 +18,9 @@ public interface ICarRepository
 
     Task<Car?> GetByVinAsync(string vin, CancellationToken ct = default);
 
+    Task<CarOwnerToken?> GetActiveByCarIdAsync(Guid carId, CancellationToken ct = default);
+
+
 
 
 }

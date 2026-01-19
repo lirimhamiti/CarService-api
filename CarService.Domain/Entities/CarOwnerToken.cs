@@ -30,4 +30,7 @@ public sealed class CarOwnerToken : AuditableEntity
         IsActive = false;
         MarkUpdated();
     }
+
+    public static CarOwnerToken Create(Guid carId, string tokenHash)
+      => new CarOwnerToken(carId, tokenHash);
 }

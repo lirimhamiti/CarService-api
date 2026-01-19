@@ -51,5 +51,13 @@ public sealed class CarRepository : ICarRepository
     public Task<Car?> GetByVinAsync(string vin, CancellationToken ct = default)
         => _context.Cars.AsNoTracking().FirstOrDefaultAsync(x => x.Vin == vin, ct);
 
+    public async Task<CarOwnerToken?> GetActiveByCarIdAsync(Guid carId, CancellationToken ct = default)
+    {
+        return await _context.CarOwnerTokens
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.CarId == carId && x.IsActive, ct);
+    }
+
+
 
 }

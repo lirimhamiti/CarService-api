@@ -9,11 +9,13 @@ public sealed class CreateCarHandler
 {
     private readonly ICarRepository _cars;
     private readonly IGarageRepository _garages;
+    private readonly ICarOwnerTokenRepository _tokens;
 
-    public CreateCarHandler(ICarRepository cars, IGarageRepository garages)
+    public CreateCarHandler(ICarRepository cars, IGarageRepository garages, ICarOwnerTokenRepository tokens)
     {
         _cars = cars;
         _garages = garages;
+        _tokens = tokens;
     }
 
     public async Task<CarDto> Handle(CreateCarCommand cmd, CancellationToken ct = default)
@@ -42,6 +44,15 @@ public sealed class CreateCarHandler
         await _cars.AddAsync(car, ct);
 
         await _cars.SaveChangesAsync(ct);
+
+        var rawToken = _tokens.GenerateRawToken();   
+        var tokenHash = _tokens.HashToken(rawToken);
+
+        var carToken = CarOwnerToken.Create(car.Id, tokenHash);
+
+
+        await _tokens.AddAsync(carToken, ct);
+        await _tokens.SaveChangesAsync(ct);
 
         return new CarDto(
             car.Id,
