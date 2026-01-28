@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using CarService.Application.Abstractions;
+﻿using CarService.Application.Abstractions;
 using CarService.Application.Owners.Dtos;
 
 namespace CarService.Application.Owners.Queries;
@@ -20,10 +18,9 @@ public sealed class GetCarServicesByTokenHandler
 
     public async Task<IReadOnlyList<OwnerServiceRecordDto>?> Handle(string token, CancellationToken ct = default)
     {
-        if (string.IsNullOrWhiteSpace(token))
+        var tokenHash = ExtractTokenHash(token);
+        if (tokenHash is null)
             return null;
-
-        var tokenHash = HashToken(token);
 
         var tokenRow = await _tokens.GetActiveByHashAsync(tokenHash, ct);
         if (tokenRow is null)
@@ -43,10 +40,23 @@ public sealed class GetCarServicesByTokenHandler
             .ToList();
     }
 
-    private static string HashToken(string raw)
+    private static string? ExtractTokenHash(string input)
     {
-        var bytes = Encoding.UTF8.GetBytes(raw.Trim());
-        var hash = SHA256.HashData(bytes);
-        return Convert.ToHexString(hash);
+        if (string.IsNullOrWhiteSpace(input))
+            return null;
+
+        var s = Uri.UnescapeDataString(input.Trim());
+
+        var idx = s.IndexOf("token=", StringComparison.OrdinalIgnoreCase);
+        if (idx >= 0)
+        {
+            var tok = s[(idx + "token=".Length)..];
+            var amp = tok.IndexOf('&');
+            if (amp >= 0) tok = tok[..amp];
+            tok = tok.Trim();
+            return tok.Length == 0 ? null : tok.ToUpperInvariant();
+        }
+
+        return s.ToUpperInvariant();
     }
 }
