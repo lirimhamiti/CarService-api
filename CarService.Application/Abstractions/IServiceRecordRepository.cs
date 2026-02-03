@@ -1,4 +1,5 @@
-﻿using CarService.Domain.Entities;
+﻿using CarService.Application.Owners.Dtos;
+using CarService.Domain.Entities;
 
 namespace CarService.Application.Abstractions;
 
@@ -12,5 +13,8 @@ public interface IServiceRecordRepository
     );
 
     Task<IReadOnlyList<ServiceRecord>> GetByCarIdAsync(Guid carId, CancellationToken ct = default);
+
+    Task<IReadOnlyList<OwnerServiceRecordDto>> GetOwnerByCarIdAsync(Guid carId, CancellationToken ct = default);
+
 
 }

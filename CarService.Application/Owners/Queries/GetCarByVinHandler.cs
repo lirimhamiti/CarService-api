@@ -24,8 +24,7 @@ public sealed class GetCarByVinHandler
         return new OwnerCarDto(
             car.Id,
             car.PlateNumber,
-            car.Vin,
-            car.GarageId
+            car.Vin
         );
     }
 }

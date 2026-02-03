@@ -9,12 +9,16 @@ public sealed class CarConfiguration : IEntityTypeConfiguration<Car>
         b.ToTable("Cars");
         b.HasKey(x => x.Id);
 
-        b.Property(x => x.PlateNumber).HasMaxLength(8).IsRequired();
+        b.Property(x => x.PlateNumber)
+            .HasMaxLength(12)
+            .IsRequired();
 
-        // Relationship WITHOUT navigation property
-        b.HasOne<Garage>()
-            .WithMany()
-            .HasForeignKey(x => x.GarageId)
-            .OnDelete(DeleteBehavior.Restrict);
+        b.Property(x => x.Vin)
+            .HasMaxLength(17)
+            .IsRequired()
+            .IsFixedLength();
+
+        b.HasIndex(x => x.Vin).IsUnique();
+
     }
 }

@@ -4,27 +4,28 @@ namespace CarService.Domain.Entities;
 
 public sealed class Car : AuditableEntity
 {
-    public Guid GarageId { get; private set; }
     public string Vin { get; private set; } = default!;
     public string PlateNumber { get; private set; } = default!;
 
     private Car() { }
 
-    public Car(Guid garageId, string plateNumber, string vin)
+    public Car(string plateNumber, string vin)
     {
-        if (garageId == Guid.Empty) throw new ArgumentException("GarageId cannot be empty.");
         if (string.IsNullOrWhiteSpace(plateNumber)) throw new ArgumentException("PlateNumber is required.");
+        if (string.IsNullOrWhiteSpace(vin)) throw new ArgumentException("VIN is required.");
+
+        var v = vin.Trim().ToUpperInvariant();
+        if (v.Length != 17) throw new ArgumentException("VIN must be exactly 17 characters.");
 
         Id = Guid.NewGuid();
-        GarageId = garageId;
         PlateNumber = plateNumber.Trim().ToUpperInvariant();
-        Vin = vin?.Trim();
+        Vin = v;
     }
 
-    public void ChangeGarage(Guid newGarageId)
+    public void UpdatePlate(string plateNumber)
     {
-        if (newGarageId == Guid.Empty) throw new ArgumentException("GarageId cannot be empty.");
-        GarageId = newGarageId;
+        if (string.IsNullOrWhiteSpace(plateNumber)) throw new ArgumentException("PlateNumber is required.");
+        PlateNumber = plateNumber.Trim().ToUpperInvariant();
         MarkUpdated();
     }
 }

@@ -5,5 +5,9 @@ public sealed record OwnerServiceRecordDto(
     DateTime ServiceDate,
     int Mileage,
     string? Notes,
-    DateTime CreatedAt
+    DateTime CreatedAt,
+    Guid GarageId,
+    string GarageName,
+    string GarageCity
 );
+

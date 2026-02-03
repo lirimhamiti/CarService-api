@@ -23,17 +23,8 @@ public sealed class GetCarServicesByVinHandler
         if (car is null)
             return null;
 
-        var records = await _services.GetByCarIdAsync(car.Id, ct);
+        var list = await _services.GetOwnerByCarIdAsync(car.Id, ct);
 
-        return records
-            .OrderByDescending(x => x.ServiceDate)
-            .Select(x => new OwnerServiceRecordDto(
-                x.Id,
-                x.ServiceDate,
-                x.Mileage,
-                x.Notes,
-                x.CreatedAt
-            ))
-            .ToList();
+        return list;
     }
 }

@@ -26,18 +26,9 @@ public sealed class GetCarServicesByTokenHandler
         if (tokenRow is null)
             return null;
 
-        var records = await _services.GetByCarIdAsync(tokenRow.CarId, ct);
+        var list = await _services.GetOwnerByCarIdAsync(tokenRow.CarId, ct);
 
-        return records
-            .OrderByDescending(x => x.ServiceDate)
-            .Select(x => new OwnerServiceRecordDto(
-                x.Id,
-                x.ServiceDate,
-                x.Mileage,
-                x.Notes,
-                x.CreatedAt
-            ))
-            .ToList();
+        return list;
     }
 
     private static string? ExtractTokenHash(string input)

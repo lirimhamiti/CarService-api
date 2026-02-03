@@ -1,4 +1,5 @@
 ﻿using CarService.Application.Abstractions;
+using CarService.Application.Owners.Dtos;
 using CarService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,5 +38,25 @@ public sealed class ServiceRecordRepository : IServiceRecordRepository
             .Where(x => x.CarId == carId)
             .OrderByDescending(x => x.ServiceDate)
             .ToListAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<OwnerServiceRecordDto>> GetOwnerByCarIdAsync(Guid carId, CancellationToken ct = default)
+    {
+        return await (
+            from sr in _db.ServiceRecords.AsNoTracking()
+            join g in _db.Garages.AsNoTracking() on sr.GarageId equals g.Id
+            where sr.CarId == carId
+            orderby sr.ServiceDate descending
+            select new OwnerServiceRecordDto(
+                sr.Id,
+                sr.ServiceDate,
+                sr.Mileage,
+                sr.Notes,
+                sr.CreatedAt,
+                g.Id,
+                g.Name,
+                g.City
+            )
+        ).ToListAsync(ct);
     }
 }

@@ -21,7 +21,6 @@ public sealed class GetCarsByGarageHandler
                 c.Id,
                 c.PlateNumber,
                 c.Vin,
-                c.GarageId,
                 c.CreatedAt
             ))
             .ToList();

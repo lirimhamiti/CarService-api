@@ -54,6 +54,8 @@ public static class DependencyInjection
         services.AddScoped<ApproveGarageHandler>();
         services.AddScoped<RejectGarageHandler>();
         services.AddScoped<IGarageRepository, GarageRepository>();
+        services.AddScoped<IGarageCarRepository, GarageCarRepository>();
+
 
 
         return services;

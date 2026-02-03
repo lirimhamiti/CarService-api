@@ -33,8 +33,7 @@ public sealed class GetCarByTokenHandler
         return new OwnerCarDto(
             car.Id,
             car.PlateNumber,
-            car.Vin,
-            car.GarageId
+            car.Vin
         );
     }
 

@@ -17,7 +17,7 @@ public static class ServiceRecordEndpoints
             CarServiceDbContext db,
             CancellationToken ct) =>
         {
-            var carOk = await db.Cars.AnyAsync(c => c.Id == carId && c.GarageId == garageId, ct);
+            var carOk = await db.GarageCars.AnyAsync(gc => gc.GarageId == garageId && gc.CarId == carId, ct);
             if (!carOk) return Results.NotFound("Car not found for this garage.");
 
             var items = await db.ServiceRecords
@@ -45,7 +45,7 @@ public static class ServiceRecordEndpoints
             CarServiceDbContext db,
             CancellationToken ct) =>
         {
-            var carOk = await db.Cars.AnyAsync(c => c.Id == carId && c.GarageId == garageId, ct);
+            var carOk = await db.GarageCars.AnyAsync(gc => gc.GarageId == garageId && gc.CarId == carId, ct);
             if (!carOk) return Results.NotFound("Car not found for this garage.");
 
             if (req.Mileage < 0) return Results.BadRequest("Mileage must be >= 0.");

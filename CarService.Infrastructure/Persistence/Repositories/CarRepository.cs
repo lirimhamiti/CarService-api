@@ -42,11 +42,19 @@ public sealed class CarRepository : ICarRepository
 
     public async Task<IReadOnlyList<Car>> GetByGarageIdAsync(Guid garageId, CancellationToken ct = default)
     {
-        return await _context.Cars
-            .Where(x => x.GarageId == garageId)
-            .OrderByDescending(x => x.CreatedAt)
+        return await _context.GarageCars
+            .AsNoTracking()
+            .Where(gc => gc.GarageId == garageId)
+            .Join(
+                _context.Cars.AsNoTracking(),
+                gc => gc.CarId,
+                c => c.Id,
+                (gc, c) => c
+            )
+            .OrderByDescending(c => c.CreatedAt)
             .ToListAsync(ct);
     }
+
 
     public Task<Car?> GetByVinAsync(string vin, CancellationToken ct = default)
         => _context.Cars.AsNoTracking().FirstOrDefaultAsync(x => x.Vin == vin, ct);

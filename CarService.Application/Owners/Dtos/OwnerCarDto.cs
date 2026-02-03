@@ -3,6 +3,5 @@
 public sealed record OwnerCarDto(
     Guid CarId,
     string PlateNumber,
-    string Vin,
-    Guid CurrentGarageId
+    string Vin
 );
