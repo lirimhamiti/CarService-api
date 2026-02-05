@@ -16,5 +16,8 @@ public interface IServiceRecordRepository
 
     Task<IReadOnlyList<OwnerServiceRecordDto>> GetOwnerByCarIdAsync(Guid carId, CancellationToken ct = default);
 
+    Task<int> GetMaxMileageByCarIdAsync(Guid carId, CancellationToken ct = default);
+
+
 
 }

@@ -1,4 +1,5 @@
-﻿using CarService.Domain.Entities;
+﻿using CarService.Application.Abstractions;
+using CarService.Domain.Entities;
 using CarService.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,18 +38,23 @@ public static class ServiceRecordEndpoints
 
             return Results.Ok(items);
         });
-
         group.MapPost("/", async (
-            Guid garageId,
-            Guid carId,
-            CreateServiceRecordRequest req,
-            CarServiceDbContext db,
-            CancellationToken ct) =>
+      Guid garageId,
+      Guid carId,
+      CreateServiceRecordRequest req,
+      CarServiceDbContext db,
+      IServiceRecordRepository services,
+      CancellationToken ct) =>
         {
             var carOk = await db.GarageCars.AnyAsync(gc => gc.GarageId == garageId && gc.CarId == carId, ct);
             if (!carOk) return Results.NotFound("Car not found for this garage.");
 
-            if (req.Mileage < 0) return Results.BadRequest("Mileage must be >= 0.");
+            if (req.Mileage < 0)
+                return Results.BadRequest("Mileage must be >= 0.");
+
+            var maxMileage = await services.GetMaxMileageByCarIdAsync(carId, ct);
+            if (req.Mileage < maxMileage)
+                return Results.BadRequest($"Mileage cannot be lower than the last recorded mileage ({maxMileage}).");
 
             var entity = new ServiceRecord(
                 carId: carId,
@@ -72,6 +78,8 @@ public static class ServiceRecordEndpoints
                 createdAt = entity.CreatedAt
             });
         });
+
+
 
         return app;
     }

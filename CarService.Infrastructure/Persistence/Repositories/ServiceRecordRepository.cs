@@ -59,4 +59,12 @@ public sealed class ServiceRecordRepository : IServiceRecordRepository
             )
         ).ToListAsync(ct);
     }
+
+    public async Task<int> GetMaxMileageByCarIdAsync(Guid carId, CancellationToken ct = default)
+    {
+        return await _db.ServiceRecords
+            .Where(x => x.CarId == carId)
+            .MaxAsync(x => (int?)x.Mileage, ct) ?? 0;
+    }
+
 }
