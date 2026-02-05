@@ -1,4 +1,5 @@
 ﻿using CarService.Application.Garages.Commands;
+using CarService.Application.Garages.Dtos;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -40,11 +41,35 @@ public static class GarageEndpoints
 
 
 
-        garages.MapPost("/login", async (GarageLoginCommand cmd, GarageLoginHandler handler, CancellationToken ct) =>
+        garages.MapPost("/login", async (
+       GarageLoginCommand cmd,
+       GarageLoginHandler handler,
+       CancellationToken ct) =>
         {
-            var result = await handler.Handle(cmd, ct);
-            return result is null ? Results.Unauthorized() : Results.Ok(result);
+            var (result, failure) = await handler.Handle(cmd, ct);
+
+            if (result is not null)
+                return Results.Ok(result);
+
+            return failure!.Code switch
+            {
+                GarageLoginFailure.PendingApproval => Results.Problem(
+                    title: "Pending approval",
+                    detail: failure.Message,
+                    statusCode: StatusCodes.Status403Forbidden),
+
+                GarageLoginFailure.Rejected => Results.Problem(
+                    title: "Rejected",
+                    detail: failure.Message,
+                    statusCode: StatusCodes.Status403Forbidden),
+
+                _ => Results.Problem(
+                    title: "Unauthorized",
+                    detail: failure.Message,
+                    statusCode: StatusCodes.Status401Unauthorized),
+            };
         });
+
 
 
         return app;
